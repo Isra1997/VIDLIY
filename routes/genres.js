@@ -30,13 +30,13 @@ router.post('/',async(req,res)=>{
 
 
 router.put('/:id',async (req,res)=>{
-const {error , value } = validateSchema(req.body);
-if(error) res.status(400).send(error.details[0].message);
-const updatedGenre = await Genre.findByIdAndUpdate({ _id: req.params.id},{$set:{
-    name : req.body.name,
-}},{new : true})
-if(!updatedGenre) res.status(404).send("Genre with the given ID is not found.");
-res.send(updatedGenre);
+    const {error , value } = validateSchema(req.body);
+    if(error) res.status(400).send(error.details[0].message);
+    const updatedGenre = await Genre.findByIdAndUpdate({ _id: req.params.id},{$set:{
+        name : req.body.name,
+    }},{new : true})
+    if(!updatedGenre) res.status(404).send("Genre with the given ID is not found.");
+    res.send(updatedGenre);
 });
 
 router.delete('/:id',async (req,res)=>{
@@ -47,7 +47,7 @@ router.delete('/:id',async (req,res)=>{
 
 
 
-/////////////////////// Other Methods ////////////////
+/////////////////////// Other Methods ///////////////////////
 
 function validateSchema(genre){
     const schema = Joi.object({
