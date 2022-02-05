@@ -15,7 +15,7 @@ router.get('/:id',async(req,res)=>{
 
 router.post('/',async(req,res)=>{
     const {error , value } = Customer.validate(req.body);
-    if(error) res.status(404).send(error.details[0].message);
+    if(error) res.status(400).send(error.details[0].message);
     const newRecord = new Customer.Customer(req.body);
     try {
         const result = await newRecord.save();
@@ -38,7 +38,7 @@ router.put('/:id',async (req,res)=>{
 
 router.delete('/:id',async (req,res)=>{
     const removedCustomer = await Customer.Customer.findByIdAndRemove(req.params.id);
-    if(!removedCustomer) return res.status(400).send("Customer with the given ID not found.");
+    if(!removedCustomer) return res.status(404).send("Customer with the given ID not found.");
     res.send(removedCustomer)
 });
 

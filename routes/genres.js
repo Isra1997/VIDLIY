@@ -17,7 +17,7 @@ router.get('/:id',async(req,res)=>{
 
 router.post('/',async(req,res)=>{
         const {error , value } = Genre.Genre.validate(req.body);
-        if(error) res.status(404).send(error.details[0].message);
+        if(error) res.status(400).send(error.details[0].message);
         const newRecord = new Genre.Genre(req.body);
         try {
             const result = await newRecord.save();
@@ -40,7 +40,7 @@ router.put('/:id',async (req,res)=>{
 
 router.delete('/:id',async (req,res)=>{
     const removedGenre = await Genre.Genre.findByIdAndRemove(req.params.id);
-    if(!removedGenre) return res.status(400).send("Genre with the given ID not found.");
+    if(!removedGenre) return res.status(404).send("Genre with the given ID not found.");
     res.send(removedGenre)
 });
 
