@@ -4,7 +4,9 @@ const genres = require('./routes/genres');
 const customers = require('./routes/customers');
 const movies = require('./routes/movies');
 const rentals = require('./routes/rentals');
+const users = require('./routes/users');
 const mongoose = require('mongoose');
+const auth = require('./routes/auth');
 require('dotenv').config();
 
 
@@ -22,6 +24,8 @@ app.use('/api/vidly/genres', genres);
 app.use('/api/vidly/customers',customers);
 app.use('/api/vidly/movies',movies);
 app.use('/api/vidly/rentals',rentals);
+app.use('/api/vidly/users',users);
+app.use('/api/vidly/auth');
 
 mongoose.connect(`mongodb://${process.env.DB_Host}/${process.env.DB_Name}`)
 .then(console.log("Connected to Mongodb..."))
