@@ -25,7 +25,7 @@ app.use('/api/vidly/customers',customers);
 app.use('/api/vidly/movies',movies);
 app.use('/api/vidly/rentals',rentals);
 app.use('/api/vidly/users',users);
-app.use('/api/vidly/auth');
+app.use('/api/vidly/auth',auth);
 
 mongoose.connect(`mongodb://${process.env.DB_Host}/${process.env.DB_Name}`)
 .then(console.log("Connected to Mongodb..."))
