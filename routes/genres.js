@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const Genre = require('../models/genre');
+const auth = require('../middleware/auth');
+const admin = require('../middleware/admin');
 
 
 router.get('/',async(req,res)=>{
@@ -15,7 +17,7 @@ router.get('/:id',async(req,res)=>{
 });
 
 
-router.post('/',async(req,res)=>{
+router.post('/', auth , async(req,res)=>{
         const {error , value } = Genre.Genre.validate(req.body);
         if(error) res.status(400).send(error.details[0].message);
         const newRecord = new Genre.Genre(req.body);
@@ -28,7 +30,7 @@ router.post('/',async(req,res)=>{
 })
 
 
-router.put('/:id',async (req,res)=>{
+router.put('/:id', auth ,async (req,res)=>{
     const {error , value } = Genre.Genre.validate(req.body);
     if(error) res.status(400).send(error.details[0].message);
     const updatedGenre = await Genre.Genre.findByIdAndUpdate({ _id: req.params.id},{$set:{
@@ -38,8 +40,9 @@ router.put('/:id',async (req,res)=>{
     res.send(updatedGenre);
 });
 
-router.delete('/:id',async (req,res)=>{
+router.delete('/:id',[auth,admin] , async (req,res)=>{
     const removedGenre = await Genre.Genre.findByIdAndRemove(req.params.id);
+    console.log(removedGenre);
     if(!removedGenre) return res.status(404).send("Genre with the given ID not found.");
     res.send(removedGenre)
 });

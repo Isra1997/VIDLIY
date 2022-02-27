@@ -4,9 +4,7 @@ const {Rental , validate} = require('../models/rental');
 const { Movie } = require('../models/movie');
 const { Customer } = require('../models/customer');
 const mongoose = require('mongoose');
-// const Fawn = require('fawn');
-
-// Fawn.init(`mongodb://${process.env.DB_Host}/${process.env.DB_Name}`,'rentals');
+const auth = require('../middleware/auth');
 
 
 router.get('/',async(req,res)=>{
@@ -21,7 +19,7 @@ router.get('/id',async(req,res)=>{
     res.send(rentals);
 })
 
-router.post('/', async(req,res)=>{
+router.post('/', auth ,async(req,res)=>{
         const session = await mongoose.startSession();
         //validate that the client sent the correct request body
         const {error , value } = validate(req.body);
@@ -66,7 +64,7 @@ router.post('/', async(req,res)=>{
         res.send(rental);
 });
 
-router.put('/:id',async(req,res)=>{
+router.put('/:id',auth ,async(req,res)=>{
     const {error , value} = validate(req.body);
     if(error) return res.status(400).send(error.details[0].message);
     const session = await mongoose.startSession();
@@ -86,7 +84,6 @@ router.put('/:id',async(req,res)=>{
             // no. of days between two dates
             var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
             rental.rentalFee = 5 * Difference_In_Days;
-            console.log( 5 * Difference_In_Days);
             rental.save();
         });
 
@@ -98,7 +95,7 @@ router.put('/:id',async(req,res)=>{
 
 })
 
-router.delete('/:id',async(req,res)=>{
+router.delete('/:id',auth ,async(req,res)=>{
     
     const rental =  await Rental.findById(req.params.id);
     if(!rental) return res.status(404).send("Rental with the given ID not found.");

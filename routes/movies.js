@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {Movie, validate } = require('../models/movie');
 const {Genre} = require('../models/genre');
+const auth = require('../middleware/auth');
 
 router.get('/',async(req,res)=>{
     const movies = await Movie.find().sort('genre');
@@ -14,7 +15,7 @@ router.get('/:id',async(req,res)=>{
     res.send(result);
 });
 
-router.post('/',async(req,res)=>{
+router.post('/',auth ,async(req,res)=>{
     const {error , value } = Movie.validate(req.body);
     if(error) return res.status(404).send(error.details[0].message);
     const genre = await Genre.findById(req.body.genre.id);
@@ -28,7 +29,7 @@ router.post('/',async(req,res)=>{
     }
 })
 
-router.put('/:id',async (req,res)=>{
+router.put('/:id',auth ,async (req,res)=>{
     const genre = await Genre.findById(req.body.genre.id);
     if(!genre) return res.status(400).send("Invalid genre.");
     const updatedMovie = await Movie.findByIdAndUpdate({ _id: req.params.id},{$set:{
@@ -45,7 +46,7 @@ router.put('/:id',async (req,res)=>{
 });
 
 
-router.delete('/:id',async (req,res)=>{
+router.delete('/:id',auth ,async (req,res)=>{
     const removedMovie = await Movie.findByIdAndRemove(req.params.id);
     if(!removedMovie) return res.status(400).send("Customer with the given ID not found.");
     res.send(removedMovie)

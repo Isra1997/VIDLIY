@@ -1,10 +1,16 @@
 const bcrypt = require('bcrypt');
 const _ = require('lodash');
 const express = require('express');
-const { send } = require('express/lib/response');
 const router = express.Router();
-const { Schema , User , Validate} = require('../models/user');
-const { use } = require('./genres');
+const { User , Validate} = require('../models/user');
+// authorization to check the user is authorized
+const auth = require('../middleware/auth');
+require('dotenv').config(); 
+
+router.get('/me',auth , async(req,res)=>{
+    const user = await User.findById(req.user._id);
+    res.send(_.pick(user,['name','email']));
+})
 
 router.get('/',async(req,res)=>{
     const allUsers = await User.find().sort('name');
@@ -25,11 +31,14 @@ router.post('/',async(req,res)=>{
 
     try{
         await user.save();
-        res.send(_.pick(user,['_id','name','email']))
+        const token = user.generateAuthToken();
+        res.header('x-auth-token',token).send(_.pick(user,['_id','name','email']));
     }catch(ex){
         console.log(ex);
         res.status(500).send("something went wrong!")
     }
 })
+
+
 
 module.exports = router; 
